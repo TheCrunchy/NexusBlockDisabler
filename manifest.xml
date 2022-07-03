@@ -2,5 +2,5 @@
 <PluginManifest xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <Name>NexusBlockDisabler</Name>
   <Guid>0f1280ca-a3e9-4fe7-b0f1-d00bdc4c987e</Guid>
-  <Version>v1.2</Version>
+  <Version>v1.4</Version>
 </PluginManifest>
