@@ -23,26 +23,40 @@ namespace NexusBlockDisabler
     [PatchShim]
     public class NexusGridPatch
     {
-        internal static readonly MethodInfo update =
-           typeof(Nexus.BoundarySystem.GridTransport).GetMethod("PrepareGrids", BindingFlags.Instance | BindingFlags.NonPublic) ??
-            throw new Exception("Failed to find patch method");
+   //     internal static readonly MethodInfo getPcu = Type.GetType("SKO.GridPCULimiter.GridPCULimiterConfig").GetProperty("MaxGridPCU", BindingFlags.Instance | BindingFlags.Public).GetAccessors()[0] ?? throw new Exception("Failed to find patch method");
+      
+
+     //   internal static readonly MethodInfo update =
+   //        typeof(Nexus.BoundarySystem.GridTransport).GetMethod("PrepareGrids", BindingFlags.Instance | BindingFlags.NonPublic);
         internal static readonly MethodInfo updatePatch =
 typeof(NexusGridPatch).GetMethod(nameof(DisableDrive), BindingFlags.Static | BindingFlags.Public) ??
 throw new Exception("Failed to find patch method");
 
+        internal static readonly MethodInfo getPCUPatch =
+            typeof(NexusGridPatch).GetMethod(nameof(ReturnPCU), BindingFlags.Static | BindingFlags.Public) ??
+            throw new Exception("Failed to find patch method");
 
-        internal static readonly MethodInfo afterSpawn =
-        typeof(Nexus.BoundarySystem.GridTransport).GetMethod("AfterGridSpawn", BindingFlags.Instance | BindingFlags.NonPublic) ??
-         throw new Exception("Failed to find patch method");
-        internal static readonly MethodInfo afterSpawnPatch =
-typeof(NexusGridPatch).GetMethod(nameof(AfterGridSpawn), BindingFlags.Static | BindingFlags.Public) ??
-throw new Exception("Failed to find patch method");
+        //        internal static readonly MethodInfo afterSpawn =
+        //        typeof(Nexus.BoundarySystem.GridTransport).GetMethod("AfterGridSpawn", BindingFlags.Instance | BindingFlags.NonPublic) ??
+        //         throw new Exception("Failed to find patch method");
+        //        internal static readonly MethodInfo afterSpawnPatch =
+        //typeof(NexusGridPatch).GetMethod(nameof(AfterGridSpawn), BindingFlags.Static | BindingFlags.Public) ??
+        //throw new Exception("Failed to find patch method");
 
 
         public static void Patch(PatchContext ctx)
         {
-            ctx.GetPattern(update).Prefixes.Add(updatePatch);
-            ctx.GetPattern(update).Prefixes.Add(afterSpawnPatch);
+            var getPcu = Type.GetType("SKO.GridPCULimiter.GridPCULimiterConfig")
+                .GetProperty("MaxGridPCU", BindingFlags.Instance | BindingFlags.Public);
+
+            NexusDisableCore.Log.Info("IS NULL? " + getPcu != null);
+            //    if (update != null)
+            //   {
+            //     ctx.GetPattern(update).Prefixes.Add(updatePatch);
+            // }
+
+            // ctx.GetPattern(getPcu).Suffixes.Add(getPCUPatch);
+            //   ctx.GetPattern(afterSpawn).Prefixes.Add(afterSpawnPatch);
         }
         public static void AfterGridSpawn(HashSet<MyCubeGrid> SpawnedGrids)
         {
@@ -61,6 +75,12 @@ throw new Exception("Failed to find patch method");
                     }
                 }
             }
+        }
+
+        public static void ReturnPCU(long __result)
+        {
+            NexusDisableCore.Log.Info("Getting PCU");
+            __result = 5;
         }
 
         public static Boolean DisableDrive(List<MyCubeGrid> Grids, bool AutoSend = true)
