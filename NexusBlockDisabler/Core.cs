@@ -31,36 +31,9 @@ typeof(NexusGridPatch).GetMethod(nameof(DisableDrive), BindingFlags.Static | Bin
 throw new Exception("Failed to find patch method");
 
 
-        internal static readonly MethodInfo afterSpawn =
-        typeof(Nexus.BoundarySystem.GridTransport).GetMethod("AfterGridSpawn", BindingFlags.Instance | BindingFlags.NonPublic) ??
-         throw new Exception("Failed to find patch method");
-        internal static readonly MethodInfo afterSpawnPatch =
-typeof(NexusGridPatch).GetMethod(nameof(AfterGridSpawn), BindingFlags.Static | BindingFlags.Public) ??
-throw new Exception("Failed to find patch method");
-
-
         public static void Patch(PatchContext ctx)
         {
             ctx.GetPattern(update).Prefixes.Add(updatePatch);
-            ctx.GetPattern(update).Prefixes.Add(afterSpawnPatch);
-        }
-        public static void AfterGridSpawn(HashSet<MyCubeGrid> SpawnedGrids)
-        {
-            var turnOff = NexusDisableCore.config.BlockPairNamesToDisable;
-            // NexusDisableCore.Log.Info(turnOff.Count + "COUNT");
-            foreach (var grid in SpawnedGrids)
-            {
-                foreach (var block in grid.GetFatBlocks().Where(x => turnOff.Contains(x.BlockDefinition.BlockPairName)))
-                {
-                    if (block is MyFunctionalBlock func)
-                    {
-                        if (func.Enabled)
-                        {
-                            func.Enabled = true;
-                        }
-                    }
-                }
-            }
         }
 
         public static Boolean DisableDrive(List<MyCubeGrid> Grids, bool AutoSend = true)
