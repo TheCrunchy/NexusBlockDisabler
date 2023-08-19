@@ -38,19 +38,30 @@ throw new Exception("Failed to find patch method");
 
         public static Boolean DisableDrive(List<MyCubeGrid> Grids, bool AutoSend = true)
         {
+            if (!NexusDisableCore.Setup)
+            {
+                return true;
+            }
             bool returning = true;
             var turnOff = NexusDisableCore.config.BlockPairNamesToDisable;
-           // NexusDisableCore.Log.Info(turnOff.Count + "COUNT");
-            foreach (var grid in Grids)
+            //      NexusDisableCore.Log.Info(turnOff.Count + "COUNT");
+            foreach (var grid in Grids.Where(x => x != null))
             {
-                foreach (var block in grid.GetFatBlocks().Where(x => turnOff.Contains(x.BlockDefinition.BlockPairName)))
+                if (grid.BlocksCount <= 0 || grid == null)
                 {
-                  //  NexusDisableCore.Log.Info(block.GetType());
-                    if (block is MyFunctionalBlock func)
+                    return true;
+                }
+                var blocks = grid.GetFatBlocks().OfType<MyFunctionalBlock>().Where(x =>
+                    x.BlockDefinition != null && turnOff.Contains(x.BlockDefinition.BlockPairName));
+                NexusDisableCore.Log.Info($"{blocks != null} {blocks.Count()}");
+                foreach (var block in blocks)
+                {
+                 //   NexusDisableCore.Log.Info(block.GetType());
+                    if (block != null && block is MyFunctionalBlock func)
                     {
                         if (func.Enabled)
                         {
-                       //     NexusDisableCore.Log.Info("Found a drive");
+                        //    NexusDisableCore.Log.Info("Found a drive");
                             func.Enabled = false;
                             returning = false;
                         }
@@ -65,8 +76,10 @@ throw new Exception("Failed to find patch method");
         }
     }
 
+  
     public class NexusDisableCore : TorchPluginBase
     {
+        public static bool Setup = false;
         public static Logger Log = LogManager.GetLogger("NexusBlockDisabler");
         public override void Init(ITorchBase torch)
         {
@@ -80,7 +93,7 @@ throw new Exception("Failed to find patch method");
             }
 
             SetupConfig();
-
+            Setup = true;
         }
         private void SetupConfig()
         {
