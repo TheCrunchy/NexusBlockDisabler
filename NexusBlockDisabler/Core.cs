@@ -107,7 +107,10 @@ throw new Exception("Failed to find patch method");
             else
             {
                 config = new Config();
-                config.BlockPairNamesToDisable.Add("FSDrive");
+                config.BlockPairNamesToDisable.Add("FSDriveSmall");
+                config.BlockPairNamesToDisable.Add("FSDriveLarge");
+                config.BlockPairNamesToDisable.Add("PrototechFSDriveSmall");
+                config.BlockPairNamesToDisable.Add("PrototechFSDriveLarge");
                 utils.WriteToXmlFile<Config>(StoragePath + "\\NexusBlockDisabler.xml", config, false);
             }
 
