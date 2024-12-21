@@ -36,9 +36,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\4 Torch Server\DedicatedServer64\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="Nexus">
-      <HintPath>..\..\..\..\Downloads\Nexus (Server Sectoring &amp; DataSync)\Nexus.dll</HintPath>
-    </Reference>
     <Reference Include="NLog">
       <HintPath>..\..\..\4 Torch Server\DedicatedServer64\NLog.dll</HintPath>
     </Reference>
